@@ -42,6 +42,7 @@ module EightOff where
   isKing (suit,rank) = rank == King
 
   shuffle :: Deck -> Deck
+  -- zip the given deck to a random set of numbers, sort this by those numbers and then unzip using map
   shuffle deck = map fst (sortBy sortComparator (zip deck (take packCount (randoms (mkStdGen randSeed):: [Int]))))
 
   sortComparator :: (Card,Int) -> (Card,Int) -> Ordering
