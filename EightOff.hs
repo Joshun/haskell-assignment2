@@ -10,11 +10,11 @@ module EightOff where
   -- newDeck = map (\suit -> rank -> (suit,rank)) [Heart .. Clubs] [Ace .. Queen]
   -- newDeck = zip [Heart .. Clubs] [Ace .. Queen]
 
-  newDeck :: Deck
-  newDeck = [(suit,rank) | suit <- [Heart .. ], rank <- [Ace .. ]]
+  pack :: Deck
+  pack = [(suit,rank) | suit <- [Heart .. ], rank <- [Ace .. ]]
 
-  newDeckTotal :: Int
-  newDeckTotal = length newDeck
+  packTotal :: Int
+  packTotal = length pack
 
   pipValue :: Card -> Int
   pipValue (suit,rank) = fromEnum rank
