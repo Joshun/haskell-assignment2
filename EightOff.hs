@@ -4,6 +4,9 @@ module EightOff where
   type Card = (Suit,Rank)
   type Deck = [Card]
 
+  -- (foundations,columns,reserve)
+  type EOBoard = (Deck,Deck,Deck)
+
   -- data Foundation = Card (Foundation)
 
   -- newDeck :: [Deck]
