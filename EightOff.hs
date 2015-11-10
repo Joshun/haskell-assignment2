@@ -71,6 +71,17 @@ module EightOff where
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
             where newDeck = shuffle pack
 
+  toFoundations :: EOBoard -> EOBoard
+  toFoundations board@(foundations,tableau,cells)
+    | isKing (last (foundations !! 0)) = board
+
+  foundationsWin :: Foundations -> Bool
+  foundationsWin [] = True
+  foundationsWin foundations@(h:t)
+    | isKing (last h) = foundationsWin t
+    | otherwise = False
+
+
 
 
 
