@@ -6,8 +6,11 @@ module EightOff where
   type Card = (Suit,Rank)
   type Deck = [Card]
 
-  -- (foundations,columns,reserve)
-  type EOBoard = (Deck,Deck,Deck)
+  type Foundations = [Deck]
+  type Tableau = [Deck]
+  type Cells = (Card,Card,Card,Card)
+
+  type EOBoard = (Foundations,Tableau,Cells)
 
   -- data Foundation = Card (Foundation)
 
@@ -50,3 +53,11 @@ module EightOff where
     | c > z = GT
     | c < z = LT
     | otherwise = EQ
+
+
+
+  -- eODeal :: EOBoard
+  -- eODeal = (tableau,reserves,(EmptyCard, EmptyCard, EmptyCard, EmptyCard))
+  --   where tableau = take (packCount - 4) x
+  --         reserves = []
+  --         x = shuffle pack
