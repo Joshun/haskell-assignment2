@@ -8,7 +8,7 @@ module EightOff where
 
   type Foundations = [Deck]
   type Tableau = [Deck]
-  type Cells = (Card,Card,Card,Card)
+  type Cells = Deck
 
   type EOBoard = (Foundations,Tableau,Cells)
 
@@ -55,10 +55,18 @@ module EightOff where
     | otherwise = EQ
 
   makeCells :: Deck -> Cells
-  makeCells pack = (getCell pack 0, getCell pack 1, getCell pack 2, getCell pack 3)
+  makeCells deck = drop 48 deck
 
-  getCell :: Deck -> Int -> Card
-  getCell pack cell = head (take 1 (drop (48 + cell) pack))
+  makeTableau :: Deck -> Tableau
+  makeTableau deck = makeTableauA deck 0
+
+  makeTableauA :: Deck -> Int -> Tableau
+  makeTableauA deck 8 = []
+  makeTableauA deck count = (makeTableauColumn deck count):makeTableauA deck (count+1)
+
+  makeTableauColumn :: Deck -> Int -> Deck
+  makeTableauColumn deck colNumber = take 6 (drop (6*colNumber) deck)
+
 
 
 
