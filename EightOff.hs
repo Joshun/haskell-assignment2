@@ -67,6 +67,9 @@ module EightOff where
   makeTableauColumn :: Deck -> Int -> Deck
   makeTableauColumn deck colNumber = take 6 (drop (6*colNumber) deck)
 
+  eODeal :: EOBoard
+  eODeal = ([], makeTableau newDeck, makeCells newDeck)
+            where newDeck = shuffle pack
 
 
 
