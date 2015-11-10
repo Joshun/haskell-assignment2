@@ -54,6 +54,14 @@ module EightOff where
     | c < z = LT
     | otherwise = EQ
 
+  makeCells :: Deck -> Cells
+  makeCells pack = (getCell pack 0,getCell pack 1, getCell pack 2, getCell pack 3)
+
+  getCell :: Deck -> Int -> Card
+  getCell pack cell = head (take 1 (drop (48 + cell) pack))
+
+
+
 
 
   -- eODeal :: EOBoard
