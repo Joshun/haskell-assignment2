@@ -71,9 +71,21 @@ module EightOff where
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
             where newDeck = shuffle pack
 
+  nextTableauCard :: Tableau -> Card
+  nextTableauCard foundations = head (head foundations)
+
+  moveToCell :: Card -> Cells -> Cells
+  moveToCell card cells
+    | length cells == 8 = cells
+    | otherwise = appendCard card cells
+
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations,tableau,cells)
-    | isKing (last (foundations !! 0)) = board
+    | foundationsWin foundations = board
+    | ((checkTabSucc (nextTableauCard tableau) tableau) /= tableau) = (foundations, (checkTabSucc (nextTableauCard tableau) tableau), cells)
+    | ((moveToCell (nextTableauCard tableau) cells) /= cells) = (foundations, tableau, moveToCell (nextTableauCard tableau) cells)
+    | otherwise = toFoundations (tail foundations,tableau,cells)
+
 
   foundationsWin :: Foundations -> Bool
   foundationsWin [] = True
@@ -81,8 +93,22 @@ module EightOff where
     | isKing (last h) = foundationsWin t
     | otherwise = False
 
+  -- tryCardMove :: Card -> EOBoard -> EOBoard
 
+  checkTabSucc :: Card -> Tableau -> Tableau
+  checkTabSucc _ [] = []
+  checkTabSucc card tableau@(h:t)
+    | card == sCard (head h) = (card:h):t
+    | otherwise = h:(checkTabSucc card t)
 
+  -- inserts a card at the top of a deck
+  insertCard :: Card -> Deck -> Deck
+  insertCard card deck = card:deck
+
+  -- inesrts a card at the bottom of a deck
+  appendCard :: Card -> Deck -> Deck
+  appendCard _ [] = []
+  appendCard card deck@(h:t) = h:(appendCard card t)
 
 
 
