@@ -100,7 +100,7 @@ module EightOff where
 
   -- inesrts a card at the bottom of a deck
   appendCard :: Card -> Deck -> Deck
-  appendCard _ [] = []
+  appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
   --
   -- getCellContainingAce :: Cells -> Maybe Int
@@ -158,3 +158,6 @@ module EightOff where
   moveCardToTableau card tableau@(h:t) foundIndex
     | foundIndex > 0 = h:moveCardToTableau card t (foundIndex - 1)
     | otherwise = (insertCard card h):t
+
+  moveCardToCells :: Card -> Cells -> Cells
+  moveCardToCells card cells = appendCard card cells
