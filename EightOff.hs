@@ -8,7 +8,7 @@ module EightOff where
 
   type Foundations = [Deck]
   type Tableau = [Deck]
-  type Cells = Deck
+  type Cells = [Card]
 
   type EOBoard = (Foundations,Tableau,Cells)
 
@@ -100,3 +100,13 @@ module EightOff where
   appendCard :: Card -> Deck -> Deck
   appendCard _ [] = []
   appendCard card deck@(h:t) = h:(appendCard card t)
+
+  getCellContainingAce :: Cells -> Int
+  getCellContainingAce cells = getCellContainingAceA cells 0
+
+  getCellContainingAceA :: Cells -> Int -> Int
+  getCellContainingAceA [] _ = -1
+  getCellContainingAceA cells@(h:t) index
+    | cardRank == Ace = index
+    | otherwise = getCellContainingAceA t (index+1)
+    where (cardSuit,cardRank) = h
