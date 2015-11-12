@@ -138,5 +138,10 @@ module EightOff where
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card = elemIndex (sCard card) (map (\x -> head x) tableau)
 
+  -- True if there are any vacant cells
   cellSpaceRemaining :: Cells -> Bool
   cellSpaceRemaining cells = length cells < 8
+
+  -- Removes a card from a cell
+  removeCardFromCell :: Card -> Cells -> Cells
+  removeCardFromCell card cells = [x | x <- cells, x /= card ]
