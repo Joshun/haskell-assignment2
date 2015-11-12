@@ -113,5 +113,13 @@ module EightOff where
   --   | otherwise = getCellContainingAceA t (index+1)
   --   where (cardSuit,cardRank) = h
 
+  -- getCellContainingCardSuit :: Cells -> Suit -> Maybe Int
+  -- getCellContainingCardSuit cells card = elemIndex cardSuit
+
+  -- Gets position of first cell that contains an ace
   getCellContainingAce :: Cells -> Maybe Int
   getCellContainingAce cells = elemIndex Ace (map (\x -> snd x) cells)
+
+  -- Gets position of a successor card in the cells
+  getCellSuccessor :: Cells -> Card -> Maybe Int
+  getCellSuccessor cells card = elemIndex (sCard card) cells
