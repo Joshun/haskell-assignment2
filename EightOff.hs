@@ -146,8 +146,15 @@ module EightOff where
   removeCardFromCell :: Card -> Cells -> Cells
   removeCardFromCell card cells = [x | x <- cells, x /= card ]
 
+  -- Inserts a card at top of specified foundation
   moveCardToFoundation :: Card -> Foundations -> Int -> Foundations
   moveCardToFoundation card [] _ = [[card]]
   moveCardToFoundation card foundations@(h:t) foundIndex
     | foundIndex > 0 = h:moveCardToFoundation card t (foundIndex - 1)
+    | otherwise = (insertCard card h):t
+
+  moveCardToTableau :: Card -> Tableau -> Int -> Tableau
+  moveCardToTableau card [] _ = [[card]]
+  moveCardToTableau card tableau@(h:t) foundIndex
+    | foundIndex > 0 = h:moveCardToTableau card t (foundIndex - 1)
     | otherwise = (insertCard card h):t
