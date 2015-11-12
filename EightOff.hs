@@ -124,5 +124,10 @@ module EightOff where
   getCellSuccessor :: Cells -> Card -> Maybe Int
   getCellSuccessor cells card = elemIndex (sCard card) cells
 
+  -- Gets tableau that has Ace as top card
   getTableauContainingAce :: Tableau -> Maybe Int
   getTableauContainingAce tableau = elemIndex Ace (map (\x -> snd (head x)) tableau)
+
+  -- Gets tableau that has successor card as top card
+  getTableauContainingSuccessor :: Tableau -> Card -> Maybe Int
+  getTableauContainingSuccessor tableau card = elemIndex (sCard card) (map (\x -> head x) tableau)
