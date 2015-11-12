@@ -131,3 +131,6 @@ module EightOff where
   -- Gets tableau that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card = elemIndex (sCard card) (map (\x -> head x) tableau)
+
+  cellSpaceRemaining :: Cells -> Bool
+  cellSpaceRemaining cells = length cells < 8
