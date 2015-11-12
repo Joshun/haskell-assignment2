@@ -116,6 +116,12 @@ module EightOff where
   -- getCellContainingCardSuit :: Cells -> Suit -> Maybe Int
   -- getCellContainingCardSuit cells card = elemIndex cardSuit
 
+  getEmptyFoundation :: Foundations -> Maybe Int
+  getEmptyFoundation foundations
+    | foundationLength < 4 = Just foundationLength
+    | otherwise = Nothing
+    where foundationLength = length foundations
+
   -- Gets position of first cell that contains an ace
   getCellContainingAce :: Cells -> Maybe Int
   getCellContainingAce cells = elemIndex Ace (map (\x -> snd x) cells)
