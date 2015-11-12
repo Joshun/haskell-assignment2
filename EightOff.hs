@@ -1,6 +1,8 @@
 module EightOff where
   import System.Random
   import Data.List
+  import Data.Maybe
+
   data Suit = Heart | Diamond | Spades | Clubs deriving (Eq, Enum, Show)
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | King | Queen deriving (Eq, Enum, Show)
   type Card = (Suit,Rank)
@@ -101,12 +103,12 @@ module EightOff where
   appendCard _ [] = []
   appendCard card deck@(h:t) = h:(appendCard card t)
 
-  getCellContainingAce :: Cells -> Int
+  getCellContainingAce :: Cells -> Maybe Int
   getCellContainingAce cells = getCellContainingAceA cells 0
 
-  getCellContainingAceA :: Cells -> Int -> Int
-  getCellContainingAceA [] _ = -1
+  getCellContainingAceA :: Cells -> Int -> Maybe Int
+  getCellContainingAceA [] _ = Nothing
   getCellContainingAceA cells@(h:t) index
-    | cardRank == Ace = index
+    | cardRank == Ace = Just index
     | otherwise = getCellContainingAceA t (index+1)
     where (cardSuit,cardRank) = h
