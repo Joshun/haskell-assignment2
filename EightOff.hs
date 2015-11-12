@@ -102,13 +102,16 @@ module EightOff where
   appendCard :: Card -> Deck -> Deck
   appendCard _ [] = []
   appendCard card deck@(h:t) = h:(appendCard card t)
+  --
+  -- getCellContainingAce :: Cells -> Maybe Int
+  -- getCellContainingAce cells = getCellContainingAceA cells 0
+  --
+  -- getCellContainingAceA :: Cells -> Int -> Maybe Int
+  -- getCellContainingAceA [] _ = Nothing
+  -- getCellContainingAceA cells@(h:t) index
+  --   | cardRank == Ace = Just index
+  --   | otherwise = getCellContainingAceA t (index+1)
+  --   where (cardSuit,cardRank) = h
 
   getCellContainingAce :: Cells -> Maybe Int
-  getCellContainingAce cells = getCellContainingAceA cells 0
-
-  getCellContainingAceA :: Cells -> Int -> Maybe Int
-  getCellContainingAceA [] _ = Nothing
-  getCellContainingAceA cells@(h:t) index
-    | cardRank == Ace = Just index
-    | otherwise = getCellContainingAceA t (index+1)
-    where (cardSuit,cardRank) = h
+  getCellContainingAce cells = elemIndex Ace (map (\x -> snd x) cells)
