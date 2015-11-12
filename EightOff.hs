@@ -71,21 +71,12 @@ module EightOff where
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
             where newDeck = shuffle pack
 
-  nextTableauCard :: Tableau -> Card
-  nextTableauCard foundations = head (head foundations)
-
   moveToCell :: Card -> Cells -> Cells
   moveToCell card cells
     | length cells == 8 = cells
     | otherwise = appendCard card cells
 
-  toFoundations :: EOBoard -> EOBoard
-  toFoundations board@(foundations,tableau,cells)
-    | foundationsWin foundations = board
-    | ((checkTabSucc (nextTableauCard tableau) tableau) /= tableau) = (foundations, (checkTabSucc (nextTableauCard tableau) tableau), cells)
-    | ((moveToCell (nextTableauCard tableau) cells) /= cells) = (foundations, tableau, moveToCell (nextTableauCard tableau) cells)
-    | otherwise = toFoundations (tail foundations,tableau,cells)
-
+  -- moveToFoundations :: Card ->
 
   foundationsWin :: Foundations -> Bool
   foundationsWin [] = True
@@ -109,11 +100,3 @@ module EightOff where
   appendCard :: Card -> Deck -> Deck
   appendCard _ [] = []
   appendCard card deck@(h:t) = h:(appendCard card t)
-
-
-
-  -- eODeal :: EOBoard
-  -- eODeal = (tableau,reserves,(EmptyCard, EmptyCard, EmptyCard, EmptyCard))
-  --   where tableau = take (packCount - 4) x
-  --         reserves = []
-  --         x = shuffle pack
