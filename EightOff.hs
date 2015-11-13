@@ -14,6 +14,9 @@ module EightOff where
 
   type EOBoard = (Foundations,Tableau,Cells)
 
+  resMaybe :: (Maybe a) -> a
+  resMaybe (Just x) = x
+
   -- data Foundation = Card (Foundation)
 
   -- newDeck :: [Deck]
@@ -182,9 +185,9 @@ module EightOff where
   --   | isJust getEmptyFoundation foundations = resMaybe getEmptyFoundation foundations
   --   | otherwise = iterateThroughFoundations board
 
-  -- processEmptyFoundation :: EOBoard -> Int -> EOBoard
-  -- processEmptyFoundation board@(foundations,tableau,cells) foundationNum
-  --   | isJust cellAceResult = (moveCardToFoundation (resMaybe cellAceResult)
-  --   | isJust tableauAceResult =
-  --   where cellAceResult = getCellContainingAce cells
-  --         tableauAceResult = getTableauWithAce tableau
+  processEmptyFoundation :: EOBoard -> Int -> EOBoard
+  processEmptyFoundation board@(foundations,tableau,cells) foundationNum
+    | isJust cellAceResult = ((moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations foundationNum),tableau,cells)
+    -- | isJust tableauAceResult =
+    where cellAceResult = getCellContainingAce cells
+          tableauAceResult = getTableauWithAce tableau
