@@ -198,8 +198,10 @@ module EightOff where
 
   tryProcessFoundationsA :: EOBoard -> Int -> Maybe Foundations
   tryProcessFoundationsA board@(foundations,tableau,cells) foundationIndex
+    | foundationIndex > 4 = Nothing
     | isJust cellSuccessorResult = Just (moveCardToFoundation (getCardAtCell cells (resMaybe cellSuccessorResult)) foundations foundationIndex)
     | isJust tableauSuccessorResult = Just (moveCardToFoundation (getTopCardAtTableau tableau (resMaybe tableauSuccessorResult)) foundations foundationIndex)
+    | otherwise = tryProcessFoundationsA board (foundationIndex+1)
     where tableauTopCard = head (head tableau)
           cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
           tableauSuccessorResult = getTableauWithSuccessor tableau tableauTopCard
