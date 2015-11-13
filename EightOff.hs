@@ -126,6 +126,12 @@ module EightOff where
   getCellContainingAce :: Cells -> Maybe Int
   getCellContainingAce cells = elemIndex Ace (map (\x -> snd x) cells)
 
+  getCardAtCell :: Cells -> Int -> Card
+  getCardAtCell cells index = cells !! index
+
+  getTopCardAtTableau :: Tableau -> Int -> Card
+  getTopCardAtTableau tableau index = head(tableau !! index)
+
   -- Gets position of a successor card in the cells
   getCellContainingSuccessor :: Cells -> Card -> Maybe Int
   getCellContainingSuccessor cells card = elemIndex (sCard card) cells
@@ -170,3 +176,15 @@ module EightOff where
     | foundIndex > 0 = h:removeTopCardFromTableau t (foundIndex - 1)
     -- here we are leaving out the top card
     | otherwise = (tail h):t
+
+  -- processGame :: EOBoard -> EOBoard
+  -- processGame board@(foundations,tableau,cells)
+  --   | isJust getEmptyFoundation foundations = resMaybe getEmptyFoundation foundations
+  --   | otherwise = iterateThroughFoundations board
+
+  -- processEmptyFoundation :: EOBoard -> Int -> EOBoard
+  -- processEmptyFoundation board@(foundations,tableau,cells) foundationNum
+  --   | isJust cellAceResult = (moveCardToFoundation (resMaybe cellAceResult)
+  --   | isJust tableauAceResult =
+  --   where cellAceResult = getCellContainingAce cells
+  --         tableauAceResult = getTableauWithAce tableau
