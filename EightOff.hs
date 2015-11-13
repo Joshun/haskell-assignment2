@@ -185,6 +185,7 @@ module EightOff where
   --   | isJust getEmptyFoundation foundations = resMaybe getEmptyFoundation foundations
   --   | otherwise = iterateThroughFoundations board
 
+  -- currently this doesn't actually remove the cards from the respective cells / tableau when moving!
   processEmptyFoundation :: EOBoard -> Int -> Maybe Foundations
   processEmptyFoundation board@(foundations,tableau,cells) foundationNum
     | isJust cellAceResult = Just (moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations foundationNum)
@@ -196,6 +197,7 @@ module EightOff where
   tryProcessFoundations :: EOBoard -> Maybe Foundations
   tryProcessFoundations board = tryProcessFoundationsA board 0
 
+  -- currently this doesn't actually remove the cards from the respective cells / tableau when moving!
   tryProcessFoundationsA :: EOBoard -> Int -> Maybe Foundations
   tryProcessFoundationsA board@(foundations,tableau,cells) foundationIndex
     | foundationIndex > 4 = Nothing
