@@ -171,15 +171,23 @@ module EightOff where
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
 
-  tryProcessFoundations :: EOBoard -> Maybe Foundations
+  tryProcessFoundations :: EOBoard -> Maybe EOBoard
   tryProcessFoundations board = tryProcessFoundationsA board 0
 
+  moveCellCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
+  moveCellCardToFoundation board@(foundations,tableau,cells) cellIndex foundationIndex =
+    (((moveCardToFoundation (getCardAtCell cells cellIndex)) foundations foundationIndex), tableau, removeCardFromCell (getCardAtCell cells cellIndex) cells)
+
+  moveTableauTopCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
+  moveTableauTopCardToFoundation board@(foundations,tableau,cells) tableauIndex foundationIndex =
+    ((moveCardToFoundation (getTopCardAtTableau tableau tableauIndex) foundations foundationIndex), removeTopCardFromTableau tableau tableauIndex, cells)
+
   -- currently this doesn't actually remove the cards from the respective cells / tableau when moving!
-  tryProcessFoundationsA :: EOBoard -> Int -> Maybe Foundations
+  tryProcessFoundationsA :: EOBoard -> Int -> Maybe EOBoard
   tryProcessFoundationsA board@(foundations,tableau,cells) foundationIndex
     | foundationIndex > 4 = Nothing
-    | isJust cellSuccessorResult = Just (moveCardToFoundation (getCardAtCell cells (resMaybe cellSuccessorResult)) foundations foundationIndex)
-    | isJust tableauSuccessorResult = Just (moveCardToFoundation (getTopCardAtTableau tableau (resMaybe tableauSuccessorResult)) foundations foundationIndex)
+    | isJust cellSuccessorResult = Just (moveCellCardToFoundation board (resMaybe cellSuccessorResult) foundationIndex)
+    | isJust tableauSuccessorResult = Just (moveTableauTopCardToFoundation board (resMaybe tableauSuccessorResult) foundationIndex)
     | otherwise = tryProcessFoundationsA board (foundationIndex+1)
     where tableauTopCard = head (head tableau)
           cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
@@ -188,8 +196,9 @@ module EightOff where
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations, tableau, cells)
     | isJust emptyFoundationIndex && isJust (processEmptyFoundation board (resMaybe emptyFoundationIndex)) = toFoundations (resMaybe (processEmptyFoundation board (resMaybe emptyFoundationIndex)))
+    | isJust (tryProcessFoundations board) = toFoundations (resMaybe (tryProcessFoundations board))
     | otherwise = board
     where emptyFoundationIndex = getEmptyFoundation foundations
   -- code if foundations are empty
-  -- code if there are aces in cells to move
   -- code if there are any successors in cells to move
+  -- code if there are any succcessors in tableau to move
