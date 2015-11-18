@@ -176,19 +176,20 @@ module EightOff where
   moveTableauTopCardToFoundation board@(foundations,tableau,cells) tableauIndex foundationIndex =
     ((moveCardToFoundation (getTopCardAtTableau tableau tableauIndex) foundations foundationIndex), removeTopCardFromTableau tableau tableauIndex, cells)
 
+
   -- Helper function which tries to see if there is a successor card in cells or tableau to those in one of the foundations and if so moves it to the foundation
   tryProcessSuccessors :: EOBoard -> Maybe EOBoard
   tryProcessSuccessors board = tryProcessSuccessorsA board 0
 
   tryProcessSuccessorsA :: EOBoard -> Int -> Maybe EOBoard
   tryProcessSuccessorsA board@(foundations,tableau,cells) foundationIndex
-    | foundationIndex > 4 = Nothing
+    | foundationIndex == (length foundations) = Nothing
     | isJust cellSuccessorResult = Just (moveCellCardToFoundation board (fromJust cellSuccessorResult) foundationIndex)
     | isJust tableauSuccessorResult = Just (moveTableauTopCardToFoundation board (fromJust tableauSuccessorResult) foundationIndex)
     | otherwise = tryProcessSuccessorsA board (foundationIndex+1)
-    where tableauTopCard = head (head tableau)
-          cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
-          tableauSuccessorResult = getTableauWithSuccessor tableau tableauTopCard
+    where foundationTopCard = head (foundations !! foundationIndex)
+          cellSuccessorResult = getCellContainingSuccessor cells foundationTopCard
+          tableauSuccessorResult = getTableauWithSuccessor tableau foundationTopCard
 
   -- Function that tries to make all possible moves to the foundations
   toFoundations :: EOBoard -> EOBoard
