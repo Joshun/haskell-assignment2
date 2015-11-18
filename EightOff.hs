@@ -145,8 +145,8 @@ module EightOff where
   tryProcessEmptyFoundationA :: EOBoard -> Maybe Int -> Maybe EOBoard
   tryProcessEmptyFoundationA board@(foundations,tableau,cells) foundationNum
     | not (isJust (foundationNum)) = Nothing
-    | isJust cellAceResult = Just ((moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations (resMaybe foundationNum)), tableau, removeCardFromCell (getCardAtCell cells (resMaybe cellAceResult)) cells)
-    | isJust tableauAceResult = Just ((moveCardToFoundation (getTopCardAtTableau tableau (resMaybe tableauAceResult)) foundations (resMaybe foundationNum)), removeTopCardFromTableau tableau (resMaybe tableauAceResult), cells)
+    | isJust cellAceResult = Just(moveCellCardToFoundation board (resMaybe cellAceResult) (resMaybe foundationNum))
+    | isJust tableauAceResult = Just(moveTableauTopCardToFoundation board (resMaybe tableauAceResult) (resMaybe foundationNum))
     | otherwise = Nothing
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
