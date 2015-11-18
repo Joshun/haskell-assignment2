@@ -14,9 +14,6 @@ module EightOff where
 
   type EOBoard = (Foundations,Tableau,Cells)
 
-  resMaybe :: (Maybe a) -> a
-  resMaybe (Just x) = x
-
   randSeed :: Int
   randSeed = 13
 
@@ -109,7 +106,7 @@ module EightOff where
   -- Gets position of a successor card in the cells
   getCellContainingSuccessor :: Cells -> Card -> Maybe Int
   getCellContainingSuccessor cells card
-    | isJust successorCard = elemIndex (resMaybe successorCard) cells
+    | isJust successorCard = elemIndex (fromJust successorCard) cells
     | otherwise = Nothing
     where successorCard = sCard card
 
@@ -120,7 +117,7 @@ module EightOff where
   -- Gets tableau that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card
-    | isJust successorCard = elemIndex (resMaybe successorCard) (map (\x -> head x) tableau)
+    | isJust successorCard = elemIndex (fromJust successorCard) (map (\x -> head x) tableau)
     where successorCard = sCard card
 
   -- True if there are any vacant cells
@@ -150,8 +147,8 @@ module EightOff where
   tryProcessEmptyFoundationA :: EOBoard -> Maybe Int -> Maybe EOBoard
   tryProcessEmptyFoundationA board@(foundations,tableau,cells) foundationNum
     | not (isJust (foundationNum)) = Nothing
-    | isJust cellAceResult = Just(moveCellCardToFoundation board (resMaybe cellAceResult) (resMaybe foundationNum))
-    | isJust tableauAceResult = Just(moveTableauTopCardToFoundation board (resMaybe tableauAceResult) (resMaybe foundationNum))
+    | isJust cellAceResult = Just(moveCellCardToFoundation board (fromJust cellAceResult) (fromJust foundationNum))
+    | isJust tableauAceResult = Just(moveTableauTopCardToFoundation board (fromJust tableauAceResult) (fromJust foundationNum))
     | otherwise = Nothing
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
@@ -180,8 +177,8 @@ module EightOff where
   tryProcessSuccessorsA :: EOBoard -> Int -> Maybe EOBoard
   tryProcessSuccessorsA board@(foundations,tableau,cells) foundationIndex
     | foundationIndex > 4 = Nothing
-    | isJust cellSuccessorResult = Just (moveCellCardToFoundation board (resMaybe cellSuccessorResult) foundationIndex)
-    | isJust tableauSuccessorResult = Just (moveTableauTopCardToFoundation board (resMaybe tableauSuccessorResult) foundationIndex)
+    | isJust cellSuccessorResult = Just (moveCellCardToFoundation board (fromJust cellSuccessorResult) foundationIndex)
+    | isJust tableauSuccessorResult = Just (moveTableauTopCardToFoundation board (fromJust tableauSuccessorResult) foundationIndex)
     | otherwise = tryProcessSuccessorsA board (foundationIndex+1)
     where tableauTopCard = head (head tableau)
           cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
@@ -190,8 +187,8 @@ module EightOff where
   -- Function that tries to make all possible moves to the foundations
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations, tableau, cells)
-    | isJust emptyFoundationResult = toFoundations (resMaybe emptyFoundationResult)
-    | isJust processSuccessorsResult = toFoundations (resMaybe processSuccessorsResult)
+    | isJust emptyFoundationResult = toFoundations (fromJust emptyFoundationResult)
+    | isJust processSuccessorsResult = toFoundations (fromJust processSuccessorsResult)
     | otherwise = board
     where emptyFoundationResult = tryProcessEmptyFoundation board
           processSuccessorsResult = tryProcessSuccessors board
