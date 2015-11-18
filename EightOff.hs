@@ -17,12 +17,6 @@ module EightOff where
   resMaybe :: (Maybe a) -> a
   resMaybe (Just x) = x
 
-  -- data Foundation = Card (Foundation)
-
-  -- newDeck :: [Deck]
-  -- newDeck = map (\suit -> rank -> (suit,rank)) [Heart .. Clubs] [Ace .. Queen]
-  -- newDeck = zip [Heart .. Clubs] [Ace .. Queen]
-
   randSeed :: Int
   randSeed = 13
 
@@ -157,12 +151,8 @@ module EightOff where
     -- here we are leaving out the top card
     | otherwise = (tail h):t
 
-  -- processGame :: EOBoard -> EOBoard
-  -- processGame board@(foundations,tableau,cells)
-  --   | isJust getEmptyFoundation foundations = resMaybe getEmptyFoundation foundations
-  --   | otherwise = iterateThroughFoundations board
 
-  -- currently this doesn't actually remove the cards from the respective cells / tableau when moving!
+  -- helper function which tries to move aces from either cells or tableau to an empty foundation
   processEmptyFoundation :: EOBoard -> Int -> Maybe EOBoard
   processEmptyFoundation board@(foundations,tableau,cells) foundationNum
     | isJust cellAceResult = Just ((moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations foundationNum), tableau, removeCardFromCell (getCardAtCell cells (resMaybe cellAceResult)) cells)
@@ -171,18 +161,21 @@ module EightOff where
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
 
-  tryProcessSuccessors :: EOBoard -> Maybe EOBoard
-  tryProcessSuccessors board = tryProcessSuccessorsA board 0
 
+  -- Removes card from given cell and moves it to given foundation
   moveCellCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
   moveCellCardToFoundation board@(foundations,tableau,cells) cellIndex foundationIndex =
     (((moveCardToFoundation (getCardAtCell cells cellIndex)) foundations foundationIndex), tableau, removeCardFromCell (getCardAtCell cells cellIndex) cells)
 
+  -- Removes top card from given tableau and moves it to given foundation
   moveTableauTopCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
   moveTableauTopCardToFoundation board@(foundations,tableau,cells) tableauIndex foundationIndex =
     ((moveCardToFoundation (getTopCardAtTableau tableau tableauIndex) foundations foundationIndex), removeTopCardFromTableau tableau tableauIndex, cells)
 
-  -- currently this doesn't actually remove the cards from the respective cells / tableau when moving!
+  -- Helper function which tries to see if there is a successor card in cells or tableau to those in one of the foundations and if so moves it to the foundation
+  tryProcessSuccessors :: EOBoard -> Maybe EOBoard
+  tryProcessSuccessors board = tryProcessSuccessorsA board 0
+
   tryProcessSuccessorsA :: EOBoard -> Int -> Maybe EOBoard
   tryProcessSuccessorsA board@(foundations,tableau,cells) foundationIndex
     | foundationIndex > 4 = Nothing
@@ -193,12 +186,10 @@ module EightOff where
           cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
           tableauSuccessorResult = getTableauWithSuccessor tableau tableauTopCard
 
+  -- Function that tries to make all possible moves to the foundations
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations, tableau, cells)
     | isJust emptyFoundationIndex && isJust (processEmptyFoundation board (resMaybe emptyFoundationIndex)) = toFoundations (resMaybe (processEmptyFoundation board (resMaybe emptyFoundationIndex)))
     | isJust (tryProcessSuccessors board) = toFoundations (resMaybe (tryProcessSuccessors board))
     | otherwise = board
     where emptyFoundationIndex = getEmptyFoundation foundations
-  -- code if foundations are empty
-  -- code if there are any successors in cells to move
-  -- code if there are any succcessors in tableau to move
