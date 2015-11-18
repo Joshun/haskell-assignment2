@@ -54,14 +54,19 @@ module EightOff where
   makeCells deck = drop 48 deck
 
   makeTableau :: Deck -> Tableau
-  makeTableau deck = makeTableauA deck 0
+  -- makeTableau deck = makeTableauA deck 0
 
-  makeTableauA :: Deck -> Int -> Tableau
-  makeTableauA deck 8 = []
-  makeTableauA deck count = (makeTableauColumn deck count):makeTableauA deck (count+1)
+  makeTableau deck@(h:t)
+    | length deck < 6 = []
+    | otherwise = take 6 deck:(makeTableau (drop 6 deck))
 
-  makeTableauColumn :: Deck -> Int -> Deck
-  makeTableauColumn deck colNumber = take 6 (drop (6*colNumber) deck)
+
+  -- makeTableauA :: Deck -> Int -> Tableau
+  -- makeTableauA deck 8 = []
+  -- makeTableauA deck count = (makeTableauColumn deck count):makeTableauA deck (count+1)
+  --
+  -- makeTableauColumn :: Deck -> Int -> Deck
+  -- makeTableauColumn deck colNumber = take 6 (drop (6*colNumber) deck)
 
   eODeal :: EOBoard
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
