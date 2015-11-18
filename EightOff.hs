@@ -15,7 +15,7 @@ module EightOff where
   type EOBoard = (Foundations,Tableau,Cells)
 
   randSeed :: Int
-  randSeed = 13
+  randSeed = 27
 
   pack :: Deck
   pack = [(suit,rank) | suit <- [Hearts .. ], rank <- [Ace .. ]]
