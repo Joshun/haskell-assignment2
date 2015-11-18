@@ -3,7 +3,7 @@ module EightOff where
   import Data.List
   import Data.Maybe
 
-  data Suit = Hearts | Diamond | Spades | Clubs deriving (Eq, Enum, Show)
+  data Suit = Hearts | Diamonds | Spades | Clubs deriving (Eq, Enum, Show)
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
   type Card = (Suit,Rank)
   type Deck = [Card]
@@ -29,13 +29,13 @@ module EightOff where
   pipValue :: Card -> Int
   pipValue (suit,rank) = fromEnum rank
 
-  sCard :: Card -> Card
-  sCard (suit,King) = (suit,Ace)
-  sCard (suit,rank) = (suit,succ rank)
+  sCard :: Card -> Maybe Card
+  sCard (suit,King) = Nothing
+  sCard (suit,rank) = Just (suit,succ rank)
 
-  pCard :: Card -> Card
-  pCard (suit,Ace) = (suit,King)
-  pCard (suit,rank) = (suit, pred rank)
+  pCard :: Card -> Maybe Card
+  pCard (suit,Ace) = Nothing
+  pCard (suit,rank) =  Just (suit, pred rank)
 
   isAce :: Card -> Bool
   isAce (suit,rank) = rank == Ace
@@ -108,7 +108,10 @@ module EightOff where
 
   -- Gets position of a successor card in the cells
   getCellContainingSuccessor :: Cells -> Card -> Maybe Int
-  getCellContainingSuccessor cells card = elemIndex (sCard card) cells
+  getCellContainingSuccessor cells card
+    | isJust successorCard = elemIndex (resMaybe successorCard) cells
+    | otherwise = Nothing
+    where successorCard = sCard card
 
   -- Gets tableau that has Ace as top card
   getTableauWithAce :: Tableau -> Maybe Int
@@ -116,7 +119,9 @@ module EightOff where
 
   -- Gets tableau that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
-  getTableauWithSuccessor tableau card = elemIndex (sCard card) (map (\x -> head x) tableau)
+  getTableauWithSuccessor tableau card
+    | isJust successorCard = elemIndex (resMaybe successorCard) (map (\x -> head x) tableau)
+    where successorCard = sCard card
 
   -- True if there are any vacant cells
   cellSpaceRemaining :: Cells -> Bool
