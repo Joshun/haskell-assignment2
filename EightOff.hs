@@ -142,13 +142,20 @@ module EightOff where
     | otherwise = (tail h):t
 
   -- helper function which tries to move aces from either cells or tableau to an empty foundation
-  processEmptyFoundation :: EOBoard -> Int -> Maybe EOBoard
-  processEmptyFoundation board@(foundations,tableau,cells) foundationNum
-    | isJust cellAceResult = Just ((moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations foundationNum), tableau, removeCardFromCell (getCardAtCell cells (resMaybe cellAceResult)) cells)
-    | isJust tableauAceResult = Just ((moveCardToFoundation (getTopCardAtTableau tableau (resMaybe tableauAceResult)) foundations foundationNum), removeTopCardFromTableau tableau (resMaybe tableauAceResult), cells)
+  tryProcessEmptyFoundationA :: EOBoard -> Maybe Int -> Maybe EOBoard
+  tryProcessEmptyFoundationA board@(foundations,tableau,cells) foundationNum
+    | not (isJust (foundationNum)) = Nothing
+    | isJust cellAceResult = Just ((moveCardToFoundation (getCardAtCell cells (resMaybe cellAceResult)) foundations (resMaybe foundationNum)), tableau, removeCardFromCell (getCardAtCell cells (resMaybe cellAceResult)) cells)
+    | isJust tableauAceResult = Just ((moveCardToFoundation (getTopCardAtTableau tableau (resMaybe tableauAceResult)) foundations (resMaybe foundationNum)), removeTopCardFromTableau tableau (resMaybe tableauAceResult), cells)
     | otherwise = Nothing
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
+
+  tryProcessEmptyFoundation :: EOBoard -> Maybe EOBoard
+  tryProcessEmptyFoundation board@(foundations,tableau,cells)
+    | isJust foundationNum = tryProcessEmptyFoundationA board foundationNum
+    | otherwise = Nothing
+    where foundationNum = getEmptyFoundation foundations
 
 
   -- Removes card from given cell and moves it to given foundation
@@ -178,7 +185,8 @@ module EightOff where
   -- Function that tries to make all possible moves to the foundations
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations, tableau, cells)
-    | isJust emptyFoundationIndex && isJust (processEmptyFoundation board (resMaybe emptyFoundationIndex)) = toFoundations (resMaybe (processEmptyFoundation board (resMaybe emptyFoundationIndex)))
-    | isJust (tryProcessSuccessors board) = toFoundations (resMaybe (tryProcessSuccessors board))
+    | isJust emptyFoundationResult = toFoundations (resMaybe emptyFoundationResult)
+    | isJust processSuccessorsResult = toFoundations (resMaybe processSuccessorsResult)
     | otherwise = board
-    where emptyFoundationIndex = getEmptyFoundation foundations
+    where emptyFoundationResult = tryProcessEmptyFoundation board
+          processSuccessorsResult = tryProcessSuccessors board
