@@ -123,6 +123,7 @@ module EightOff where
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card
     | isJust successorCard = elemIndex (fromJust successorCard) (map (\x -> head x) tableau)
+    | otherwise = Nothing
     where successorCard = sCard card
 
   -- True if there are any vacant cells
