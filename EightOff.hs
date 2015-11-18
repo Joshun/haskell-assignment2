@@ -75,21 +75,11 @@ module EightOff where
     | length cells == 8 = cells
     | otherwise = appendCard card cells
 
-  -- moveToFoundations :: Card ->
-
   foundationsWin :: Foundations -> Bool
   foundationsWin [] = True
   foundationsWin foundations@(h:t)
     | isKing (last h) = foundationsWin t
     | otherwise = False
-
-  -- tryCardMove :: Card -> EOBoard -> EOBoard
-
-  checkTabSucc :: Card -> Tableau -> Tableau
-  checkTabSucc _ [] = []
-  checkTabSucc card tableau@(h:t)
-    | card == sCard (head h) = (card:h):t
-    | otherwise = h:(checkTabSucc card t)
 
   -- inserts a card at the top of a deck
   insertCard :: Card -> Deck -> Deck
@@ -150,7 +140,6 @@ module EightOff where
     | foundIndex > 0 = h:removeTopCardFromTableau t (foundIndex - 1)
     -- here we are leaving out the top card
     | otherwise = (tail h):t
-
 
   -- helper function which tries to move aces from either cells or tableau to an empty foundation
   processEmptyFoundation :: EOBoard -> Int -> Maybe EOBoard
