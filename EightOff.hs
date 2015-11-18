@@ -4,7 +4,7 @@ module EightOff where
   import Data.Maybe
 
   data Suit = Hearts | Diamond | Spades | Clubs deriving (Eq, Enum, Show)
-  data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | King | Queen deriving (Eq, Enum, Show)
+  data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
   type Card = (Suit,Rank)
   type Deck = [Card]
 
