@@ -30,11 +30,11 @@ module EightOff where
   pipValue (suit,rank) = fromEnum rank
 
   sCard :: Card -> Card
-  sCard (suit,Queen) = (suit,Ace)
+  sCard (suit,King) = (suit,Ace)
   sCard (suit,rank) = (suit,succ rank)
 
   pCard :: Card -> Card
-  pCard (suit,Ace) = (suit,Queen)
+  pCard (suit,Ace) = (suit,King)
   pCard (suit,rank) = (suit, pred rank)
 
   isAce :: Card -> Bool
