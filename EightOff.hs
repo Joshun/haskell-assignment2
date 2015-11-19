@@ -149,7 +149,6 @@ module EightOff where
     -- here we are leaving out the top card
     | otherwise = (tail h):t
 
-  -- helper function which tries to move aces from either cells or tableau to an empty foundation
   tryProcessEmptyFoundationA :: EOBoard -> Maybe Int -> Maybe EOBoard
   tryProcessEmptyFoundationA board@(foundations,tableau,cells) foundationNum
     | not (isJust (foundationNum)) = Nothing
@@ -159,12 +158,12 @@ module EightOff where
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
 
+  -- helper function which tries to move aces from either cells or tableau to an empty foundation
   tryProcessEmptyFoundation :: EOBoard -> Maybe EOBoard
   tryProcessEmptyFoundation board@(foundations,tableau,cells)
     | isJust foundationNum = tryProcessEmptyFoundationA board foundationNum
     | otherwise = Nothing
     where foundationNum = getEmptyFoundation foundations
-
 
   -- Removes card from given cell and moves it to given foundation
   moveCellCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
@@ -175,7 +174,6 @@ module EightOff where
   moveTableauTopCardToFoundation :: EOBoard -> Int -> Int -> EOBoard
   moveTableauTopCardToFoundation board@(foundations,tableau,cells) tableauIndex foundationIndex =
     ((moveCardToFoundation (getTopCardAtTableau tableau tableauIndex) foundations foundationIndex), removeTopCardFromTableau tableau tableauIndex, cells)
-
 
   -- Helper function which tries to see if there is a successor card in cells or tableau to those in one of the foundations and if so moves it to the foundation
   tryProcessSuccessors :: EOBoard -> Maybe EOBoard
