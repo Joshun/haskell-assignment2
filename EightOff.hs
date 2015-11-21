@@ -23,13 +23,16 @@ module EightOff where
   packCount :: Int
   packCount = length pack
 
+  -- Returns the pip (rank) value of a given card
   pipValue :: Card -> Int
   pipValue (suit,rank) = fromEnum rank
 
+  -- Returns successor card for ranks for which this is defined (otherwise Nothing)
   sCard :: Card -> Maybe Card
   sCard (suit,King) = Nothing
   sCard (suit,rank) = Just (suit,succ rank)
 
+  -- Returns predecessor card for ranks for which this is defined (otherwise Nothing)
   pCard :: Card -> Maybe Card
   pCard (suit,Ace) = Nothing
   pCard (suit,rank) =  Just (suit, pred rank)
@@ -54,19 +57,10 @@ module EightOff where
   makeCells deck = drop 48 deck
 
   makeTableau :: Deck -> Tableau
-  -- makeTableau deck = makeTableauA deck 0
-
   makeTableau deck@(h:t)
+    -- if deck length is less than 6 then we have finished making tableau columns as (6*8) = 48 leaving the last 4 for the cells
     | length deck < 6 = []
     | otherwise = take 6 deck:(makeTableau (drop 6 deck))
-
-
-  -- makeTableauA :: Deck -> Int -> Tableau
-  -- makeTableauA deck 8 = []
-  -- makeTableauA deck count = (makeTableauColumn deck count):makeTableauA deck (count+1)
-  --
-  -- makeTableauColumn :: Deck -> Int -> Deck
-  -- makeTableauColumn deck colNumber = take 6 (drop (6*colNumber) deck)
 
   eODeal :: EOBoard
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
@@ -77,12 +71,6 @@ module EightOff where
     | length cells == 8 = cells
     | otherwise = appendCard card cells
 
-  foundationsWin :: Foundations -> Bool
-  foundationsWin [] = True
-  foundationsWin foundations@(h:t)
-    | isKing (last h) = foundationsWin t
-    | otherwise = False
-
   -- inserts a card at the top of a deck
   insertCard :: Card -> Deck -> Deck
   insertCard card deck = card:deck
@@ -92,6 +80,7 @@ module EightOff where
   appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
 
+  -- Returns the first empty foundation that is available, and Nothing otherwise
   getEmptyFoundation :: Foundations -> Maybe Int
   getEmptyFoundation foundations
     | foundationLength < 4 = Just foundationLength
@@ -102,9 +91,11 @@ module EightOff where
   getCellContainingAce :: Cells -> Maybe Int
   getCellContainingAce cells = elemIndex Ace (map (\x -> snd x) cells)
 
+  -- Returns the card at a given cell position
   getCardAtCell :: Cells -> Int -> Card
   getCardAtCell cells index = cells !! index
 
+  -- Returns the card at the top of a given tableau column
   getTopCardAtTableau :: Tableau -> Int -> Card
   getTopCardAtTableau tableau index = head(tableau !! index)
 

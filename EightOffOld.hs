@@ -208,10 +208,15 @@ module EightOff where
           cellSuccessorResult = getCellContainingSuccessor cells tableauTopCard
           tableauSuccessorResult = getTableauWithSuccessor tableau tableauTopCard
 
+  checkTabSucc :: Card -> Tableau -> Tableau
+  checkTabSucc _ [] = []
+  checkTabSucc card tableau@(h:t)
+    | card == sCard (head h) = (card:h):t
+    | otherwise = h:(checkTabSucc card t)
 
 
-    checkTabSucc :: Card -> Tableau -> Tableau
-    checkTabSucc _ [] = []
-    checkTabSucc card tableau@(h:t)
-      | card == sCard (head h) = (card:h):t
-      | otherwise = h:(checkTabSucc card t)
+  foundationsWin :: Foundations -> Bool
+  foundationsWin [] = True
+  foundationsWin foundations@(h:t)
+    | isKing (last h) = foundationsWin t
+    | otherwise = False
