@@ -6,10 +6,13 @@ module EightOff where
   data Suit = Hearts | Diamonds | Spades | Clubs deriving (Eq, Enum, Show)
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
   type Card = (Suit,Rank)
+  -- Data structure to represent a complete deck of (52) cards
   type Deck = [Card]
+  -- Data structure for a stack of cards (i.e. a tableau column or a single foundation)
+  type CardStack = [Card]
 
-  type Foundations = [Deck]
-  type Tableau = [Deck]
+  type Foundations = [CardStack]
+  type Tableau = [CardStack]
   type Cells = [Card]
 
   type EOBoard = (Foundations,Tableau,Cells)
@@ -69,12 +72,12 @@ module EightOff where
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
             where newDeck = shuffle pack
 
-  -- Inserts a card at the top of a deck
-  insertCard :: Card -> Deck -> Deck
+  -- Inserts a card at the top of a stack of cards
+  insertCard :: Card -> CardStack -> CardStack
   insertCard card deck = card:deck
 
-  -- Inserts a card at the bottom of a deck
-  appendCard :: Card -> Deck -> Deck
+  -- Inserts a card at the bottom of a stack of cards
+  appendCard :: Card -> CardStack -> CardStack
   appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
 
