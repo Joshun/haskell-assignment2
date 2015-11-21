@@ -7,16 +7,19 @@ module EightOff where
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
   type Card = (Suit,Rank)
   type Deck = [Card]
+  type CardList = [Card]
 
-  type Foundations = [Deck]
-  type Tableau = [Deck]
-  type Cells = [Card]
+  type Foundations = [CardList]
+  type Tableau = [CardList]
+  type Cells = [CardList]
 
   type EOBoard = (Foundations,Tableau,Cells)
 
+  -- Random seed used by shuffle
   randSeed :: Int
   randSeed = 27
 
+  -- Generates a new pack of cards (Deck)
   pack :: Deck
   pack = [(suit,rank) | suit <- [Hearts .. ], rank <- [Ace .. ]]
 
@@ -38,7 +41,7 @@ module EightOff where
   pCard (suit,Ace) = Nothing
   pCard (suit,rank) =  Just (suit, pred rank)
 
-  -- Returns true if a given card is an ace
+  -- Returns true if a given card is an Ace
   isAce :: Card -> Bool
   isAce (suit,rank) = rank == Ace
 
@@ -46,10 +49,12 @@ module EightOff where
   isKing :: Card -> Bool
   isKing (suit,rank) = rank == King
 
+  -- Takes a Deck of cards and returns a shuffled Deck
   shuffle :: Deck -> Deck
   -- zip the given deck to a random set of numbers, sort this by those numbers and then unzip using map
   shuffle deck = map fst (sortBy sortComparator (zip deck (take packCount (randoms (mkStdGen randSeed):: [Int]))))
 
+  -- Comparator function used by shuffle
   sortComparator :: (Card,Int) -> (Card,Int) -> Ordering
   sortComparator ((a,b),c) ((x,y),z)
     | c > z = GT
@@ -70,11 +75,11 @@ module EightOff where
             where newDeck = shuffle pack
 
   -- Inserts a card at the top of a deck
-  insertCard :: Card -> Deck -> Deck
+  insertCard :: Card -> CardList -> CardList
   insertCard card deck = card:deck
 
   -- Inserts a card at the bottom of a deck
-  appendCard :: Card -> Deck -> Deck
+  appendCard :: Card -> CardList -> CardList
   appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
 
@@ -123,7 +128,7 @@ module EightOff where
   removeCardFromCell :: Card -> Cells -> Cells
   removeCardFromCell card cells = [x | x <- cells, x /= card ]
 
-    -- Inserts a card at top of specified foundation
+  -- Inserts a card at top of specified foundation
   moveCardToFoundation :: Card -> Foundations -> Int -> Foundations
   moveCardToFoundation card [] _ = [[card]]
   moveCardToFoundation card foundations@(h:t) foundIndex
