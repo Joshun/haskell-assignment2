@@ -220,3 +220,8 @@ module EightOff where
   foundationsWin foundations@(h:t)
     | isKing (last h) = foundationsWin t
     | otherwise = False
+
+  moveToCell :: Card -> Cells -> Cells
+  moveToCell card cells
+    | length cells == 8 = cells
+    | otherwise = appendCard card cells

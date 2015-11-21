@@ -66,16 +66,11 @@ module EightOff where
   eODeal = ([], makeTableau newDeck, makeCells newDeck)
             where newDeck = shuffle pack
 
-  moveToCell :: Card -> Cells -> Cells
-  moveToCell card cells
-    | length cells == 8 = cells
-    | otherwise = appendCard card cells
-
-  -- inserts a card at the top of a deck
+  -- Inserts a card at the top of a deck
   insertCard :: Card -> Deck -> Deck
   insertCard card deck = card:deck
 
-  -- inesrts a card at the bottom of a deck
+  -- Inserts a card at the bottom of a deck
   appendCard :: Card -> Deck -> Deck
   appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
