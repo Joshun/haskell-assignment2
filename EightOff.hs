@@ -20,6 +20,7 @@ module EightOff where
   pack :: Deck
   pack = [(suit,rank) | suit <- [Hearts .. ], rank <- [Ace .. ]]
 
+  -- Constant for the length of a pack of cards (52 in a standard deck)
   packCount :: Int
   packCount = length pack
 
@@ -37,9 +38,11 @@ module EightOff where
   pCard (suit,Ace) = Nothing
   pCard (suit,rank) =  Just (suit, pred rank)
 
+  -- Returns true if a given card is an ace
   isAce :: Card -> Bool
   isAce (suit,rank) = rank == Ace
 
+  -- Returns true if a given card is a King
   isKing :: Card -> Bool
   isKing (suit,rank) = rank == King
 
