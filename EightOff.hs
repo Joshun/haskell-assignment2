@@ -2,6 +2,7 @@ module EightOff where
   import System.Random
   import Data.List
   import Data.Maybe
+  import Debug.Trace
 
   data Suit = Hearts | Diamonds | Spades | Clubs deriving (Eq, Enum, Show)
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
@@ -117,15 +118,18 @@ module EightOff where
     | otherwise = Nothing
     where successorCard = sCard card
 
+  checkTableau :: Tableau -> Tableau
+  checkTableau tableau = (filter (\x -> length x > 0 ) tableau)
+
   -- Gets index of Tableau column that has Ace as top card
   getTableauWithAce :: Tableau -> Maybe Int
-  getTableauWithAce tableau = elemIndex Ace (map (\x -> snd (head x)) tableau)
+  getTableauWithAce tableau = trace ("a") elemIndex Ace (map (\x -> snd (head x)) (filter (\i -> length i > 0) tableau))
 
   -- Gets index of Tableau column that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card
   -- If card has valid successor, see if the top card of any tableau columns is equal to this
-    | isJust successorCard = elemIndex (fromJust successorCard) (map (\x -> head x) tableau)
+    | isJust successorCard = elemIndex (fromJust successorCard) (map (\x -> head x) (filter (\i -> length i > 0) tableau))
     | otherwise = Nothing
     where successorCard = sCard card
 
@@ -209,3 +213,5 @@ module EightOff where
     | otherwise = board
     where emptyFoundationResult = tryProcessEmptyFoundation board
           processSuccessorsResult = tryProcessSuccessors board
+
+  testBoard1 = ([[(Hearts,Two)]],[[(Clubs,Ace)]],[(Hearts,Ace),(Clubs,Two)])
