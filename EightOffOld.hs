@@ -225,3 +225,7 @@ module EightOff where
   moveToCell card cells
     | length cells == 8 = cells
     | otherwise = appendCard card cells
+
+  -- True if there are any vacant cells
+  cellSpaceRemaining :: Cells -> Bool
+  cellSpaceRemaining cells = length cells < 8

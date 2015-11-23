@@ -129,10 +129,6 @@ module EightOff where
     | otherwise = Nothing
     where successorCard = sCard card
 
-  -- True if there are any vacant cells
-  cellSpaceRemaining :: Cells -> Bool
-  cellSpaceRemaining cells = length cells < 8
-
   -- Removes a card from a cell
   removeCardFromCell :: Card -> Cells -> Cells
   removeCardFromCell card cells = [x | x <- cells, x /= card ]
