@@ -152,6 +152,7 @@ module EightOff where
   removeTopCardFromTableau foundations@(h:t) foundIndex
     | foundIndex > 0 = h:removeTopCardFromTableau t (foundIndex - 1)
     -- here we are leaving out the top card
+    | length h == 1 = t
     | otherwise = (tail h):t
 
   -- Helper function which tries to move aces from either cells or tableau to an empty foundation
@@ -214,4 +215,4 @@ module EightOff where
     where emptyFoundationResult = tryProcessEmptyFoundation board
           processSuccessorsResult = tryProcessSuccessors board
 
-  testBoard1 = ([[(Hearts,Two)]],[[(Clubs,Ace)]],[(Hearts,Ace),(Clubs,Two)])
+  testBoard1 = ([[(Hearts,Two)]],[[(Clubs,Ace)],[(Spades,Ace)]],[(Hearts,Ace),(Clubs,Two)])
