@@ -9,6 +9,7 @@ module EightOff where
   -- Data structure to represent a complete deck of (52) cards
   type Deck = [Card]
   -- Data structure for a stack of cards (i.e. a tableau column or a single foundation)
+  -- In this structure, first card in list is top card of the foundation / tableau stack and last card is the bottom card
   type CardStack = [Card]
 
   type Foundations = [CardStack]
@@ -78,18 +79,20 @@ module EightOff where
 
   -- Inserts a card at the top of a stack of cards
   insertCard :: Card -> CardStack -> CardStack
+  insertCard card [] = [card]
   insertCard card deck = card:deck
 
   -- Inserts a card at the bottom of a stack of cards
   appendCard :: Card -> CardStack -> CardStack
-
   appendCard card [] = [card]
   appendCard card deck@(h:t) = h:(appendCard card t)
 
   -- Returns the first empty foundation that is available, and Nothing otherwise
   getEmptyFoundation :: Foundations -> Maybe Int
   getEmptyFoundation foundations
+  -- Not all 4 foundations have been created yet so return length as this equals the index of the next foundation
     | foundationLength < 4 = Just foundationLength
+  -- Else all foundations have been created so return Nothing
     | otherwise = Nothing
     where foundationLength = length foundations
 
@@ -108,7 +111,9 @@ module EightOff where
   -- Gets index of a successor card in the cells
   getCellContainingSuccessor :: Cells -> Card -> Maybe Int
   getCellContainingSuccessor cells card
+  -- If card has valid successor, see if it is in the cells and if so return its index
     | isJust successorCard = elemIndex (fromJust successorCard) cells
+  -- Return Nothing if card doesn't have a valid successor (i.e. King)
     | otherwise = Nothing
     where successorCard = sCard card
 
@@ -119,6 +124,7 @@ module EightOff where
   -- Gets index of Tableau column that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
   getTableauWithSuccessor tableau card
+  -- If card has valid successor, see if the top card of any tableau columns is equal to this
     | isJust successorCard = elemIndex (fromJust successorCard) (map (\x -> head x) tableau)
     | otherwise = Nothing
     where successorCard = sCard card
@@ -133,7 +139,9 @@ module EightOff where
 
   -- Inserts a card at top of specified foundation
   moveCardToFoundation :: Card -> Foundations -> Int -> Foundations
+  -- If foundation is empty, create new one with card inserted
   moveCardToFoundation card [] _ = [[card]]
+  -- Otherwise insert card at top of foundation when we've found it
   moveCardToFoundation card foundations@(h:t) foundIndex
     | foundIndex > 0 = h:moveCardToFoundation card t (foundIndex - 1)
     | otherwise = (insertCard card h):t
@@ -155,9 +163,13 @@ module EightOff where
 
   tryProcessEmptyFoundationA :: EOBoard -> Maybe Int -> Maybe EOBoard
   tryProcessEmptyFoundationA board@(foundations,tableau,cells) foundationNum
+    -- If there are no empty foundations, return Nothing immediately
     | not (isJust (foundationNum)) = Nothing
+    -- See if any there are any aces in cells and if so move them to the empty foundation
     | isJust cellAceResult = Just(moveCellCardToFoundation board (fromJust cellAceResult) (fromJust foundationNum))
+    -- Else see if there are any aces in tableau and if so move them to the empty foundation
     | isJust tableauAceResult = Just(moveTableauTopCardToFoundation board (fromJust tableauAceResult) (fromJust foundationNum))
+    -- If no aces were found in either cells or tableau, return Nothing
     | otherwise = Nothing
     where cellAceResult = getCellContainingAce cells
           tableauAceResult = getTableauWithAce tableau
@@ -193,8 +205,11 @@ module EightOff where
   -- Function that tries to make all possible moves to the foundations
   toFoundations :: EOBoard -> EOBoard
   toFoundations board@(foundations, tableau, cells)
+    -- See if an ace could be moved to an empty foundation
     | isJust emptyFoundationResult = toFoundations (fromJust emptyFoundationResult)
+    -- Else see if a successor card could be moved to a foundation
     | isJust processSuccessorsResult = toFoundations (fromJust processSuccessorsResult)
+    -- Otherwise, there are no more moves to be made to the foundations so return Nothing
     | otherwise = board
     where emptyFoundationResult = tryProcessEmptyFoundation board
           processSuccessorsResult = tryProcessSuccessors board
