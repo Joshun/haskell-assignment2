@@ -2,7 +2,6 @@ module EightOff where
   import System.Random
   import Data.List
   import Data.Maybe
-  import Debug.Trace
 
   data Suit = Hearts | Diamonds | Spades | Clubs deriving (Eq, Enum, Show)
   data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Enum, Show)
@@ -123,7 +122,7 @@ module EightOff where
 
   -- Gets index of Tableau column that has Ace as top card
   getTableauWithAce :: Tableau -> Maybe Int
-  getTableauWithAce tableau = trace ("a") elemIndex Ace (map (\x -> snd (head x)) (filter (\i -> length i > 0) tableau))
+  getTableauWithAce tableau = elemIndex Ace (map (\x -> snd (head x)) (filter (\i -> length i > 0) tableau))
 
   -- Gets index of Tableau column that has successor card as top card
   getTableauWithSuccessor :: Tableau -> Card -> Maybe Int
